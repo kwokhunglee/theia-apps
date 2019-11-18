@@ -37,6 +37,7 @@ ENV PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 RUN curl -fsSL https://storage.googleapis.com/golang/go$GO_VERSION.$GOOS-$GOARCH.tar.gz | tar -C /home -xzv && \
     # install VS Code Go tools: https://github.com/Microsoft/vscode-go/blob/058eccf17f1b0eebd607581591828531d768b98e/src/goInstallTools.ts#L19-L45
     go get -u -v \
+    golang.org/x/tools/cmd/gopls \
     github.com/mdempsky/gocode \
     github.com/uudashr/gopkgs/cmd/gopkgs \
     github.com/ramya-rao-a/go-outline \
