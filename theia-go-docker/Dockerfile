@@ -71,8 +71,9 @@ RUN curl -fsSL https://storage.googleapis.com/golang/go$GO_VERSION.$GOOS-$GOARCH
 ENV SHELL=/bin/bash \
     THEIA_DEFAULT_PLUGINS=local-dir:/home/theia/plugins  \
     # configure user Go path
-    GOPATH=/home/project
-ENV PATH=$PATH:$GOPATH/bin
+    GOPATH=/home/gopath:/home/project
+ENV PATH=$PATH:/home/gopath/bin:/home/project/bin
+ENV GOPROXY=https://goproxy.cn
 
 EXPOSE 3000
 ENTRYPOINT [ "node", "/home/theia/src-gen/backend/main.js", "/home/project", "--hostname=0.0.0.0" ]
