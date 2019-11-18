@@ -26,7 +26,7 @@ RUN adduser --disabled-password --gecos '' theia && \
     chown -R theia:theia /home/go-tools;
 USER theia
 
-ENV GO_VERSION=1.12 \
+ENV GO_VERSION=1.13.4 \
     GOOS=linux \
     GOARCH=amd64 \
     GOROOT=/home/go \
