@@ -80,7 +80,7 @@ RUN apt-get -y install git sudo
 #LSPs
 
 ##GO
-ENV GO_VERSION 1.11.4
+ENV GO_VERSION 1.13.4
 ENV GOPATH=/usr/local/go-packages
 ENV GO_ROOT=/usr/local/go
 ENV PATH $PATH:/usr/local/go/bin
@@ -187,5 +187,6 @@ ENV SHELL /bin/bash\
 
 ENV GOPATH=/home/project
 ENV PATH=$PATH:$GOPATH/bin
+ENV GOPROXY=https://goproxy.cn
 
 ENTRYPOINT [ "yarn", "theia", "start", "/home/project", "--hostname=0.0.0.0" ]
