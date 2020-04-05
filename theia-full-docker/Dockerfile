@@ -186,12 +186,13 @@ EXPOSE 3000
 ENV SHELL /bin/bash\
     THEIA_DEFAULT_PLUGINS=local-dir:/home/theia/plugins
 
+
+RUN npm install -g cnpm --registry=https://registry.npm.taobao.org
 ENV GOPATH=/home/project/.gopath
 ENV PATH=$PATH:$GOPATH/bin
 ENV GOPROXY=https://goproxy.cn
 ENV M2_HOME=/home/project/.m2
 RUN npm config set cache '/home/project/.npm'
 RUN npm config set prefix '/home/project/.npm'
-RUN npm install -g cnpm --registry=https://registry.npm.taobao.org
 
 ENTRYPOINT [ "yarn", "theia", "start", "/home/project", "--hostname=0.0.0.0" ]
