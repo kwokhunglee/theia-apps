@@ -80,13 +80,14 @@ RUN apt-get -y install git sudo
 #LSPs
 
 ##GO
-ENV GO_VERSION 1.13.4
+ENV GO_VERSION 1.14.1
 ENV GOPATH=/usr/local/go-packages
 ENV GO_ROOT=/usr/local/go
 ENV PATH $PATH:/usr/local/go/bin
 ENV PATH $PATH:${GOPATH}/bin
 
-RUN curl -sS https://storage.googleapis.com/golang/go$GO_VERSION.linux-amd64.tar.gz | tar -C /usr/local -xzf - && \
+RUN wget https://studygolang.com/dl/golang/go$GO_VERSION.linux-amd64.tar.gz && tar zxf go$GO_VERSION.linux-amd64.tar.gz -C /usr/local
+RUN go get -u -v golang.org/x/tools/cmd/gopls &&\
     go get -u -v github.com/nsf/gocode && \
     go get -u -v github.com/uudashr/gopkgs/cmd/gopkgs && \
     go get -u -v github.com/ramya-rao-a/go-outline && \
@@ -117,11 +118,11 @@ RUN apt-get update && apt-get -y install openjdk-8-jdk maven gradle
 
 #C/C++
 # public LLVM PPA, development version of LLVM
-RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - && \
-    echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic main" > /etc/apt/sources.list.d/llvm.list && \
-    apt-get update && apt-get install -y clang-tools-10 clangd-10 clang-tidy-10 && \
-    ln -s /usr/bin/clangd-10 /usr/bin/clangd && \
-    ln -s /usr/bin/clang-tidy-10 /usr/bin/clang-tidy
+# RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - && \
+#     echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic main" > /etc/apt/sources.list.d/llvm.list && \
+#     apt-get update && apt-get install -y clang-tools-10 clangd-10 clang-tidy-10 && \
+#     ln -s /usr/bin/clangd-10 /usr/bin/clangd && \
+#     ln -s /usr/bin/clang-tidy-10 /usr/bin/clang-tidy
 
 #Python 2
 RUN apt-get update && apt-get install -y python python-pip && \
@@ -136,15 +137,15 @@ RUN curl -s -o composer-setup.php https://getcomposer.org/installer \
     && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
     && rm composer-setup.php
 
-#Ruby
-RUN apt-get -y install ruby ruby-dev zlib1g-dev && \
-    gem install solargraph
+# #Ruby
+# RUN apt-get -y install ruby ruby-dev zlib1g-dev && \
+#     gem install solargraph
 
 
-# Rust
-ENV RUSTUP_HOME=/usr/local/rustup \
-    CARGO_HOME=/usr/local/cargo \
-    PATH=/usr/local/cargo/bin:$PATH 
+# # Rust
+# ENV RUSTUP_HOME=/usr/local/rustup \
+#     CARGO_HOME=/usr/local/cargo \
+#     PATH=/usr/local/cargo/bin:$PATH 
 
 ENV USER root
 
@@ -185,8 +186,12 @@ EXPOSE 3000
 ENV SHELL /bin/bash\
     THEIA_DEFAULT_PLUGINS=local-dir:/home/theia/plugins
 
-ENV GOPATH=/home/project
+ENV GOPATH=/home/project/.gopath
 ENV PATH=$PATH:$GOPATH/bin
 ENV GOPROXY=https://goproxy.cn
+ENV M2_HOME=/home/project/.m2
+RUN npm config set cache '/home/project/.npm'
+RUN npm config set prefix '/home/project/.npm'
+RUN npm install -g cnpm --registry=https://registry.npm.taobao.org
 
 ENTRYPOINT [ "yarn", "theia", "start", "/home/project", "--hostname=0.0.0.0" ]
