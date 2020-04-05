@@ -87,6 +87,7 @@ ENV PATH $PATH:/usr/local/go/bin
 ENV PATH $PATH:${GOPATH}/bin
 
 RUN wget https://studygolang.com/dl/golang/go$GO_VERSION.linux-amd64.tar.gz && tar zxf go$GO_VERSION.linux-amd64.tar.gz -C /usr/local
+
 RUN go get -u -v golang.org/x/tools/cmd/gopls &&\
     go get -u -v github.com/nsf/gocode && \
     go get -u -v github.com/uudashr/gopkgs/cmd/gopkgs && \
