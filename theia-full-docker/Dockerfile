@@ -186,6 +186,9 @@ EXPOSE 3000
 ENV SHELL /bin/bash\
     THEIA_DEFAULT_PLUGINS=local-dir:/home/theia/plugins
 
+RUN git clone https://github.com/devpodio/theia-vue-extension.git
+RUN cd theia-vue-extension
+RUN yarn
 
 RUN npm install -g cnpm --registry=https://registry.npm.taobao.org
 ENV GOPATH=/home/project/.gopath
@@ -194,5 +197,6 @@ ENV GOPROXY=https://goproxy.cn
 ENV M2_HOME=/home/project/.m2
 RUN npm config set cache '/home/project/.npm'
 RUN npm config set prefix '/home/project/.npm'
+
 
 ENTRYPOINT [ "yarn", "theia", "start", "/home/project", "--hostname=0.0.0.0" ]
