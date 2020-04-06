@@ -1,3 +1,4 @@
+
 FROM ubuntu:18.04
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -87,7 +88,6 @@ ENV PATH $PATH:/usr/local/go/bin
 ENV PATH $PATH:${GOPATH}/bin
 
 RUN curl -sS https://storage.googleapis.com/golang/go$GO_VERSION.linux-amd64.tar.gz | tar -C /usr/local -xzf - && \
-    # go get -u -v golang.org/x/tools/cmd/gopls && \
     go get -u -v github.com/nsf/gocode && \
     go get -u -v github.com/uudashr/gopkgs/cmd/gopkgs && \
     go get -u -v github.com/ramya-rao-a/go-outline && \
@@ -159,8 +159,8 @@ RUN curl -s -o composer-setup.php https://getcomposer.org/installer \
 ENV USER root
 
 # RUN curl -fsSL https://sh.rustup.rs | sh -s -- -y \
-#     && rustup update \
-#     && rustup component add rls rust-src rust-analysis
+#    && rustup update \
+#    && rustup component add rls rust-src rust-analysis
 
 
 ## User account
@@ -196,14 +196,8 @@ EXPOSE 3000
 ENV SHELL=/bin/bash \
     THEIA_DEFAULT_PLUGINS=local-dir:/home/theia/plugins
 
-ENV GOPATH=/home/project \
-    PATH=$PATH:$GOPATH/bin \
-    LC_ALL=C.UTF-8 \
-    LANG=C.UTF-8
-
-RUN git clone https://github.com/devpodio/theia-vue-extension.git
-RUN cd theia-vue-extension
-RUN yarn
+# ENV GOPATH=/home/project
+# ENV PATH=$PATH:$GOPATH/bin
 
 RUN npm install -g cnpm --registry=https://registry.npm.taobao.org
 RUN npm config set cache '/home/project/.npm'
@@ -211,6 +205,8 @@ RUN npm config set prefix '/home/project/.npm'
 ENV GOPATH=/home/project/.gopath \
     PATH=$PATH:$GOPATH/bin \
     GOPROXY=https://goproxy.cn \
-    M2_HOME=/home/project/.m2
+    M2_HOME=/home/project/.m2 \
+    LC_ALL=C.UTF-8 \
+    LANG=C.UTF-8
 
 ENTRYPOINT [ "yarn", "theia", "start", "/home/project", "--hostname=0.0.0.0" ]
