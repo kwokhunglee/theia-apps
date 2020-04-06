@@ -199,7 +199,7 @@ ENV SHELL=/bin/bash \
 # ENV GOPATH=/home/project
 # ENV PATH=$PATH:$GOPATH/bin
 
-RUN npm install -g cnpm --registry=https://registry.npm.taobao.org
+# RUN npm install -g cnpm --registry=https://registry.npm.taobao.org
 RUN npm config set cache '/home/project/.npm'
 RUN npm config set prefix '/home/project/.npm'
 ENV GOPATH=/home/project/.gopath \
