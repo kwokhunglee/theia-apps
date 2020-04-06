@@ -80,62 +80,62 @@ RUN apt-get -y install git sudo
 #LSPs
 
 ##GO
-ENV GO_VERSION 1.13.4
+ENV GO_VERSION 1.14.1
 ENV GOPATH=/usr/local/go-packages
 ENV GO_ROOT=/usr/local/go
 ENV PATH $PATH:/usr/local/go/bin
 ENV PATH $PATH:${GOPATH}/bin
 
-# install Go
-RUN curl -fsSL https://storage.googleapis.com/golang/go$GO_VERSION.$GOOS-$GOARCH.tar.gz | tar -C /home -xzv && \
-    # install VS Code Go tools: https://github.com/Microsoft/vscode-go/blob/058eccf17f1b0eebd607581591828531d768b98e/src/goInstallTools.ts#L19-L45
-    go get -u -v \
-    golang.org/x/tools/cmd/gopls \
-    github.com/mdempsky/gocode \
-    github.com/uudashr/gopkgs/cmd/gopkgs \
-    github.com/ramya-rao-a/go-outline \
-    github.com/acroca/go-symbols \
-    golang.org/x/tools/cmd/guru \
-    golang.org/x/tools/cmd/gorename \
-    github.com/fatih/gomodifytags \
-    github.com/haya14busa/goplay/cmd/goplay \
-    github.com/josharian/impl \
-    github.com/tylerb/gotype-live \
-    github.com/rogpeppe/godef \
-    github.com/zmb3/gogetdoc \
-    golang.org/x/tools/cmd/goimports \
-    github.com/sqs/goreturns \
-    winterdrache.de/goformat/goformat \
-    golang.org/x/lint/golint \
-    github.com/cweill/gotests/... \
-    github.com/alecthomas/gometalinter \
-    honnef.co/go/tools/... \
-    github.com/golangci/golangci-lint/cmd/golangci-lint \
-    github.com/mgechev/revive \
-    github.com/sourcegraph/go-langserver \
-    github.com/go-delve/delve/cmd/dlv \
-    github.com/davidrjenni/reftools/cmd/fillstruct \
-    github.com/godoctor/godoctor && \
-    go get -u -v -d github.com/stamblerre/gocode && \
-    go build -o $GOPATH/bin/gocode-gomod github.com/stamblerre/gocode && \
-    rm -rf $GOPATH/src && \
-    rm -rf $GOPATH/pkg
+RUN curl -sS https://storage.googleapis.com/golang/go$GO_VERSION.linux-amd64.tar.gz | tar -C /usr/local -xzf - && \
+    go get -u -v golang.org/x/tools/cmd/gopls && \
+    go get -u -v github.com/nsf/gocode && \
+    go get -u -v github.com/uudashr/gopkgs/cmd/gopkgs && \
+    go get -u -v github.com/ramya-rao-a/go-outline && \
+    go get -u -v github.com/acroca/go-symbols && \
+    go get -u -v golang.org/x/tools/cmd/guru && \
+    go get -u -v golang.org/x/tools/cmd/gorename && \
+    go get -u -v github.com/fatih/gomodifytags && \
+    go get -u -v github.com/haya14busa/goplay/cmd/goplay && \
+    go get -u -v github.com/josharian/impl && \
+    go get -u -v github.com/tylerb/gotype-live && \
+    go get -u -v github.com/rogpeppe/godef && \
+    # godoc causing issues ATM, preventing image to build - commenting-out
+    # go get -u -v golang.org/x/tools/cmd/godoc && \
+    go get -u -v github.com/zmb3/gogetdoc && \
+    go get -u -v golang.org/x/tools/cmd/goimports && \
+    go get -u -v sourcegraph.com/sqs/goreturns && \
+    go get -u -v github.com/golang/lint/golint && \
+    go get -u -v github.com/cweill/gotests/... && \
+    go get -u -v github.com/alecthomas/gometalinter && \
+    go get -u -v honnef.co/go/tools/... && \
+    go get -u -v github.com/sourcegraph/go-langserver && \
+    go get -u -v github.com/derekparker/delve/cmd/dlv && \
+    go get -u -v github.com/davidrjenni/reftools/cmd/fillstruct
 
 #Java
 RUN apt-get update && apt-get -y install openjdk-8-jdk maven gradle
 
-
-#C/C++
-# public LLVM PPA, development version of LLVM
+# #C/C++
+# # public LLVM PPA, development version of LLVM
 # RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - && \
 #     echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic main" > /etc/apt/sources.list.d/llvm.list && \
-#     apt-get update && apt-get install -y clang-tools-10 clangd-10 clang-tidy-10 && \
-#     ln -s /usr/bin/clangd-10 /usr/bin/clangd && \
-#     ln -s /usr/bin/clang-tidy-10 /usr/bin/clang-tidy
+#     apt-get update && apt-get install -y clang-tools-11 clangd-11 clang-tidy-11 && \
+#     ln -s /usr/bin/clangd-11 /usr/bin/clangd && \
+#     ln -s /usr/bin/clang-tidy-11 /usr/bin/clang-tidy
 
-#Python 2
-RUN apt-get update && apt-get install -y python python-pip && \
-    pip install python-language-server;
+# # Install latest stable CMake
+# RUN wget "https://cmake.org/files/v3.17/cmake-3.17.0-Linux-x86_64.sh" && \
+#     chmod a+x cmake-3.17.0-Linux-x86_64.sh && \
+#     ./cmake-3.17.0-Linux-x86_64.sh --prefix=/usr/ --skip-license && \
+#     rm cmake-3.17.0-Linux-x86_64.sh
+
+#Python 2-3
+RUN apt-get update \
+    && apt-get install -y python python-pip \
+    && apt-get install -y python3-dev python3-pip \
+    && pip install --upgrade pip --user \
+    && pip3 install --upgrade pip --user \
+    && pip install python-language-server flake8 autopep8 ;
 
 #PHP
 RUN apt-get -y install php curl php-cli php-mbstring unzip
@@ -154,14 +154,14 @@ RUN curl -s -o composer-setup.php https://getcomposer.org/installer \
 # # Rust
 # ENV RUSTUP_HOME=/usr/local/rustup \
 #     CARGO_HOME=/usr/local/cargo \
-#     PATH=/usr/local/cargo/bin:$PATH 
+#     PATH=/usr/local/cargo/bin:$PATH
 
 ENV USER root
 
 RUN curl -fsSL https://sh.rustup.rs | sh -s -- -y \
     && rustup update \
     && rustup component add rls rust-src rust-analysis
-    
+
 
 ## User account
 RUN adduser --disabled-password --gecos '' theia && \
@@ -190,22 +190,27 @@ ADD $version.package.json ./package.json
 ARG GITHUB_TOKEN
 # using "NODE_OPTIONS=..." to avoid out-of-memory problem in CI
 RUN yarn --cache-folder ./ycache && rm -rf ./ycache && \
-    NODE_OPTIONS="--max_old_space_size=4096" yarn theia build
+    NODE_OPTIONS="--max_old_space_size=4096" yarn theia build ;\
+    yarn theia download:plugins
 EXPOSE 3000
-ENV SHELL /bin/bash\
+ENV SHELL=/bin/bash \
     THEIA_DEFAULT_PLUGINS=local-dir:/home/theia/plugins
+
+ENV GOPATH=/home/project
+ENV PATH=$PATH:$GOPATH/bin
+ENV LC_ALL=C.UTF-8
+ENV LANG=C.UTF-8
 
 RUN git clone https://github.com/devpodio/theia-vue-extension.git
 RUN cd theia-vue-extension
 RUN yarn
 
 RUN npm install -g cnpm --registry=https://registry.npm.taobao.org
+RUN npm config set cache '/home/project/.npm'
+RUN npm config set prefix '/home/project/.npm'
 ENV GOPATH=/home/project/.gopath
 ENV PATH=$PATH:$GOPATH/bin
 ENV GOPROXY=https://goproxy.cn
 ENV M2_HOME=/home/project/.m2
-RUN npm config set cache '/home/project/.npm'
-RUN npm config set prefix '/home/project/.npm'
-
 
 ENTRYPOINT [ "yarn", "theia", "start", "/home/project", "--hostname=0.0.0.0" ]
