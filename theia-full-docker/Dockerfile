@@ -158,9 +158,9 @@ RUN curl -s -o composer-setup.php https://getcomposer.org/installer \
 
 ENV USER root
 
-RUN curl -fsSL https://sh.rustup.rs | sh -s -- -y \
-    && rustup update \
-    && rustup component add rls rust-src rust-analysis
+# RUN curl -fsSL https://sh.rustup.rs | sh -s -- -y \
+#     && rustup update \
+#     && rustup component add rls rust-src rust-analysis
 
 
 ## User account
